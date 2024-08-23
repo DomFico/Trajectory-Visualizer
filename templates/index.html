@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Trajectory Viewer</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #eaeaea;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Draggable window container */
+        .draggable-container {
+            position: absolute;
+            width: 600px;
+            height: 500px;
+            border: 1px solid #c7c7c7;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top bar (for dragging) */
+        .drag-tab {
+            background-color: #f0f0f0;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            cursor: grab;
+            border-bottom: 1px solid #c7c7c7;
+        }
+
+        /* Frame control buttons inside the drag tab */
+        .frame-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .frame-controls button {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007aff;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .frame-controls button:hover {
+            background-color: #005ecb;
+        }
+
+        /* Content area where the 3D viewer goes */
+        .mol-container {
+            flex-grow: 1;
+            position: relative;
+            background-color: #ffffff;
+        }
+
+        /* Resizing handle in the bottom-right corner */
+        .resize-handle {
+            width: 15px;
+            height: 15px;
+            background-color: #c7c7c7;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            cursor: nwse-resize;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Draggable and resizable window -->
+<div id="draggable" class="draggable-container">
+    <div class="drag-tab">
+        <div>Protein Trajectory Viewer</div>
+        <div class="frame-controls">
+            <button id="loadXYZ">Load XYZ</button>
+            <button onclick="prevFrame()">Previous</button>
+            <button onclick="nextFrame()">Next</button>
+        </div>
+    </div>
+    <div id="container-01" class="mol-container"></div>
+    <div class="resize-handle"></div>
+</div>
+
+<script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+<script src="/static/js/main.js"></script>
+
+<script>
+    // Draggable functionality using the drag tab
+    const draggable = document.getElementById('draggable');
+    const dragTab = draggable.querySelector('.drag-tab');
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    dragTab.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialX = draggable.offsetLeft;
+        initialY = draggable.offsetTop;
+        document.body.style.cursor = 'grabbing';
+        dragTab.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            draggable.style.left = initialX + dx + 'px';
+            draggable.style.top = initialY + dy + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        document.body.style.cursor = 'default';
+        dragTab.style.cursor = 'grab';
+    });
+
+    // Handle resizing of the window with the resize handle
+    const resizeHandle = draggable.querySelector('.resize-handle');
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        initialWidth = draggable.offsetWidth;
+        initialHeight = draggable.offsetHeight;
+        document.body.style.cursor = 'nwse-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isResizing) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            draggable.style.width = initialWidth + dx + 'px';
+            draggable.style.height = initialHeight + dy + 'px';
+            viewer.resize();  // Adjust viewer size when resizing the window
+            viewer.render();
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+    });
+
+    // Handle window resize events and adjust viewer accordingly
+    const observer = new ResizeObserver(() => {
+        viewer.resize();
+        viewer.render();
+    });
+    observer.observe(draggable);
+
+</script>
+
+</body>
+</html>
