@@ -5,8 +5,8 @@ import pickle
 app = Flask(__name__)
 
 # Directory containing PDB files and path to tokens pickle file
-PDB_DIR = ''
-TOKEN_FILE = ''
+PDB_DIR = '/home/dom/Desktop/Coding/protein_website_2/pdb/'
+TOKEN_FILE = '/home/dom/Desktop/Research/HalM2/D2O/D2O_7.0/tokens_data1.pkl'
 
 def flatten_tokens(data):
     """

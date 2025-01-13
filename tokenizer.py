@@ -15,7 +15,7 @@ from collections import defaultdict
 ##############################################################################
 # Hard-coded ESM model token from Forge console
 ##############################################################################
-TOKEN = ""
+TOKEN = "5sugG3EWDXFnxFvqaXipIV"
 
 ##############################################################################
 # Initialize ESM model client
@@ -41,9 +41,9 @@ RESNAME_MAPPING = {
 ##############################################################################
 # File paths
 ##############################################################################
-DIRECTORY = ""
-TOPOLOGY_FILE = os.path.join(DIRECTORY, "")
-TRAJECTORY_FILE = os.path.join(DIRECTORY, "")
+DIRECTORY = "/home/dom/Desktop/Research/HalM2/CpHMD/HalM2_Zn_Mg+/Results/Trajectories"
+TOPOLOGY_FILE = os.path.join(DIRECTORY, "HalM2_Zn_Mg+.parm7")
+TRAJECTORY_FILE = os.path.join(DIRECTORY, "HalM2_Zn_Mg+.nc")
 
 ##############################################################################
 # Global parameter: skip frames in increments of SKIP_FRAMES
@@ -181,7 +181,7 @@ if __name__ == "__main__":
                 os.remove(pdb_path)
 
         # 5) Pickle the results
-        pickle_file = ""
+        pickle_file = "tokens_data2.pkl"
         with open(pickle_file, 'wb') as f:
             pickle.dump(tokens_dict, f)
 

@@ -99,6 +99,11 @@ The project is composed of multiple components:
 - **Frame Navigation**: Use the "Previous," "Next," "Play," and "Stop" buttons to navigate through trajectory frames.
 - **Residue Info**: View tokenized residue details in the draggable information panel.
 
+## Demonstration
+Here is a demonstration of the Protein Trajectory Visualization in action:
+
+![Demo Video](static/media/demo.webm)
+
 ## Acknowledgments
 - **ESM**: The Evolutionary Scale Modeling SDK for providing powerful tokenization capabilities.
 - **MDTraj**: For trajectory handling and processing.
