@@ -31,9 +31,9 @@ def convert_parm7_nc_to_pdb(parm7_file, nc_file, output_pdb_dir, token_file):
     print(f"Conversion of specified frames to PDB complete.")
 
 # Example usage
-parm7_file = '/home/dom/Desktop/Research/HalM2/CpHMD/HalM2_Zn_Mg+/Results/Trajectories/HalM2_Zn_Mg+.parm7'
-nc_file = '/home/dom/Desktop/Research/HalM2/CpHMD/HalM2_Zn_Mg+/Results/Trajectories/HalM2_Zn_Mg+.nc'
-output_pdb_dir = '/home/dom/Desktop/Coding/protein_website_2/pdb/'
-token_file = '/home/dom/Desktop/Research/HalM2/D2O/D2O_7.0/tokens_data1.pkl'
+parm7_file = ''
+nc_file = ''
+output_pdb_dir = ''
+token_file = ''
 
 convert_parm7_nc_to_pdb(parm7_file, nc_file, output_pdb_dir, token_file)
