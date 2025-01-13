@@ -1,6 +1,6 @@
 # Protein Trajectory Visualization and Tokenization
 
-![Demo Video](https://github.com/user-attachments/assets/ae7bb3d4-924e-4686-9631-5d1f081f4dfc)
+https://github.com/user-attachments/assets/ae7bb3d4-924e-4686-9631-5d1f081f4dfc
 
 ## Overview
 This project provides a framework to visualize protein trajectory structures and annotate each residue with a scalar value. It uses the Evolutionary Scale Modeling (ESM) tokenizer to process protein structures frame by frame and paints the trajectory structures with token values for enhanced visualization and analysis.
