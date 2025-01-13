@@ -1,0 +1,8 @@
+Flask
+MDTraj
+biopython
+torch
+numpy
+esm-sdk
+pickle
+3Dmol.js (for frontend integration, not installed via pip)

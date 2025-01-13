@@ -1,175 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protein Trajectory Viewer</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #eaeaea;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protein Trajectory Viewer</title>
+  <style>
+    /* Basic layout styling */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #eaeaea;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        /* Draggable window container */
-        .draggable-container {
-            position: absolute;
-            width: 600px;
-            height: 500px;
-            border: 1px solid #c7c7c7;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+    /* Draggable window container */
+    .draggable-container {
+      position: absolute;
+      border: 1px solid #c7c7c7;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-        /* Top bar (for dragging) */
-        .drag-tab {
-            background-color: #f0f0f0;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            cursor: grab;
-            border-bottom: 1px solid #c7c7c7;
-        }
+    /* Default sizes for containers */
+    .viewer-container {
+      width: 600px;
+      height: 500px;
+    }
 
-        /* Frame control buttons inside the drag tab */
-        .frame-controls {
-            display: flex;
-            gap: 10px;
-        }
+    .info-container {
+      width: 400px;
+      height: 300px;
+    }
 
-        .frame-controls button {
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: none;
-            background-color: #007aff;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    /* Top bar for dragging and controls */
+    .drag-tab {
+      background-color: #f0f0f0;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      cursor: grab;
+      border-bottom: 1px solid #c7c7c7;
+      user-select: none;
+    }
 
-        .frame-controls button:hover {
-            background-color: #005ecb;
-        }
+    /* Control buttons styling */
+    .frame-controls {
+      display: flex;
+      gap: 10px;
+    }
 
-        /* Content area where the 3D viewer goes */
-        .mol-container {
-            flex-grow: 1;
-            position: relative;
-            background-color: #ffffff;
-        }
+    .frame-controls button {
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: none;
+      background-color: #007aff;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        /* Resizing handle in the bottom-right corner */
-        .resize-handle {
-            width: 15px;
-            height: 15px;
-            background-color: #c7c7c7;
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            cursor: nwse-resize;
-        }
+    .frame-controls button:hover {
+      background-color: #005ecb;
+    }
 
-    </style>
+    /* Container for the 3D viewer */
+    .mol-container {
+      flex-grow: 1;
+      position: relative;
+      background-color: #ffffff;
+    }
+
+    /* Resizing handle */
+    .resize-handle {
+      width: 15px;
+      height: 15px;
+      background-color: #c7c7c7;
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      cursor: nwse-resize;
+    }
+
+    /* Scrollable content for residue info */
+    .scrollable-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #ffffff;
+    }
+
+    .scrollable-content div {
+      margin-bottom: 8px;
+      padding: 5px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .scrollable-content div span {
+      display: inline-block;
+      min-width: 120px;
+    }
+  </style>
 </head>
 <body>
-
-<!-- Draggable and resizable window -->
-<div id="draggable" class="draggable-container">
+  <!-- Draggable and resizable 3D viewer window -->
+  <div id="viewer-window" class="draggable-container viewer-container">
     <div class="drag-tab">
-        <div>Protein Trajectory Viewer</div>
-        <div class="frame-controls">
-            <button id="loadXYZ">Load XYZ</button>
-            <button onclick="prevFrame()">Previous</button>
-            <button onclick="nextFrame()">Next</button>
-        </div>
+      <div>Protein Trajectory Viewer</div>
+      <div class="frame-controls">
+        <button id="loadXYZ">Load PDB</button>
+        <button onclick="prevFrame()">Previous</button>
+        <button onclick="nextFrame()">Next</button>
+        <button id="playButton" onclick="playFrames()">Play</button>
+        <button id="stopButton" onclick="stopFrames()">Stop</button>
+      </div>
+      <span id="frameCounter" style="margin-left: 20px;"></span>
     </div>
     <div id="container-01" class="mol-container"></div>
     <div class="resize-handle"></div>
-</div>
+  </div>
 
-<script src="https://3Dmol.org/build/3Dmol-min.js"></script>
-<script src="/static/js/main.js"></script>
+  <!-- Draggable and resizable residue info window -->
+  <div id="residue-window" class="draggable-container info-container">
+    <div class="drag-tab">
+      <div>Residue Info</div>
+    </div>
+    <div class="scrollable-content" id="residueContent"></div>
+    <div class="resize-handle"></div>
+  </div>
 
-<script>
-    // Draggable functionality using the drag tab
-    const draggable = document.getElementById('draggable');
-    const dragTab = draggable.querySelector('.drag-tab');
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <script src="/static/js/main.js"></script>
 
-    dragTab.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        initialX = draggable.offsetLeft;
-        initialY = draggable.offsetTop;
+  <script>
+    // Window management class
+    class WindowManager {
+      constructor(windowElement) {
+        this.window = windowElement;
+        this.dragTab = windowElement.querySelector('.drag-tab');
+        this.resizeHandle = windowElement.querySelector('.resize-handle');
+        this.isDragging = false;
+        this.isResizing = false;
+        this.currentX = 0;
+        this.currentY = 0;
+        this.initialX = 0;
+        this.initialY = 0;
+        this.xOffset = 0;
+        this.yOffset = 0;
+        this.initialWidth = 0;
+        this.initialHeight = 0;
+
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        // Drag events
+        this.dragTab.addEventListener('mousedown', (e) => this.startDragging(e));
+        
+        // Resize events
+        this.resizeHandle.addEventListener('mousedown', (e) => this.startResizing(e));
+        
+        // Global mouse events
+        document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        document.addEventListener('mouseup', () => this.stopAll());
+      }
+
+      startDragging(e) {
+        this.isDragging = true;
+        this.initialX = e.clientX - this.xOffset;
+        this.initialY = e.clientY - this.yOffset;
+        
+        this.dragTab.style.cursor = 'grabbing';
         document.body.style.cursor = 'grabbing';
-        dragTab.style.cursor = 'grabbing';
-    });
+      }
 
-    document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            draggable.style.left = initialX + dx + 'px';
-            draggable.style.top = initialY + dy + 'px';
-        }
-    });
-
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        document.body.style.cursor = 'default';
-        dragTab.style.cursor = 'grab';
-    });
-
-    // Handle resizing of the window with the resize handle
-    const resizeHandle = draggable.querySelector('.resize-handle');
-    let isResizing = false;
-
-    resizeHandle.addEventListener('mousedown', (e) => {
-        isResizing = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        initialWidth = draggable.offsetWidth;
-        initialHeight = draggable.offsetHeight;
+      startResizing(e) {
+        this.isResizing = true;
+        this.initialWidth = this.window.offsetWidth;
+        this.initialHeight = this.window.offsetHeight;
+        this.initialX = e.clientX;
+        this.initialY = e.clientY;
+        
         document.body.style.cursor = 'nwse-resize';
-    });
+      }
 
-    document.addEventListener('mousemove', (e) => {
-        if (isResizing) {
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            draggable.style.width = initialWidth + dx + 'px';
-            draggable.style.height = initialHeight + dy + 'px';
-            viewer.resize();  // Adjust viewer size when resizing the window
-            viewer.render();
+      handleMouseMove(e) {
+        if (this.isDragging) {
+          e.preventDefault();
+          
+          this.currentX = e.clientX - this.initialX;
+          this.currentY = e.clientY - this.initialY;
+
+          this.xOffset = this.currentX;
+          this.yOffset = this.currentY;
+
+          this.window.style.transform = 
+            `translate(${this.currentX}px, ${this.currentY}px)`;
         }
-    });
 
-    document.addEventListener('mouseup', () => {
-        isResizing = false;
+        if (this.isResizing) {
+          e.preventDefault();
+          
+          const width = this.initialWidth + (e.clientX - this.initialX);
+          const height = this.initialHeight + (e.clientY - this.initialY);
+
+          // Minimum size constraints
+          const minWidth = 200;
+          const minHeight = 150;
+
+          if (width > minWidth) {
+            this.window.style.width = width + 'px';
+          }
+          if (height > minHeight) {
+            this.window.style.height = height + 'px';
+          }
+        }
+      }
+
+      stopAll() {
+        this.isDragging = false;
+        this.isResizing = false;
+        this.dragTab.style.cursor = 'grab';
         document.body.style.cursor = 'default';
+      }
+    }
+
+    // Initialize window managers for each draggable window
+    document.addEventListener('DOMContentLoaded', () => {
+      const windows = document.querySelectorAll('.draggable-container');
+      windows.forEach(window => {
+        new WindowManager(window);
+      });
     });
-
-    // Handle window resize events and adjust viewer accordingly
-    const observer = new ResizeObserver(() => {
-        viewer.resize();
-        viewer.render();
-    });
-    observer.observe(draggable);
-
-</script>
-
+  </script>
 </body>
 </html>
